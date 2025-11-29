@@ -1,0 +1,56 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: test123
+    command:
+      --default-authentication-plugin=mysql_native_password
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./mysql_scripts:/docker-entrypoint-initdb.d/
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: test123
+      POSTGRES_DB: testdb
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./postgres_scripts:/docker-entrypoint-initdb.d/
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+  oracle:
+    image: oracle/database:21.3.0-ee
+    container_name: oracle21c-labdb
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    environment:
+      ORACLE_SID: ORCLCDB
+      ORACLE_PDB: ORCLPDB1
+      ORACLE_PWD: ABC12345
+      ORACLE_MEM: 2000
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - ./oracle_data:/opt/oracle/oradata
+      - ./oracle-scripts:/opt/scripts
